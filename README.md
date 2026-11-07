@@ -1,5 +1,5 @@
 # ZoiglZeit
-<<<<<<< HEAD
+
 Eine App, die alle Zoigl-Termine anzeigt.
 =======
 
