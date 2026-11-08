@@ -320,17 +320,17 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
                     ],
                   ),
                   const Divider(height: 20),
-                  const Text(
-                    'Autor der App:',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                  const SizedBox(height: 4),
-                  const Text(
-                    'Michael Graf für Zoigl Jehovas\n'
-                    'migraf18@gmail.com\n'
-                    '\n'
-                    'www.grafm.net'
-                  ),
+                  //const Text(
+                  //  'Autor der App:',
+                  //  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  //),
+                  //const SizedBox(height: 4),
+                  //const Text(
+                  //  'Michael Graf für Zoigl Jehovas\n'
+                  //  'migraf18@gmail.com\n'
+                  //  '\n'
+                  //  'www.grafm.net'
+                  //),
                   const SizedBox(height: 12),
                   const Text(
                     'Datenquelle:',
@@ -357,8 +357,9 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   const Text(
-                    'veröffentlicht unter der Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0)',
-                   
+                    'veröffentlicht unter der Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0)\n'
+                    '(c) 2026 Michael Graf (Zoiglbrüder Zoigl Jehovas)\n'
+                    'www.grafm.net',
                   ),
                   const SizedBox(height: 20),
                   Center(
@@ -418,7 +419,7 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
                   color: Theme.of(context)
                       .colorScheme
                       .surfaceContainerHighest
-                      .withOpacity(0.4),
+                      .withValues(alpha: 0.4),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -472,7 +473,7 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
         color: Theme.of(context).colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -823,7 +824,7 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.9),
+                    color: Colors.white.withValues(alpha: 0.9),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
