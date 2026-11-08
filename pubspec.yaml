@@ -52,10 +52,18 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.0
 
 flutter_launcher_icons:
+  ios: true
   android: true
   image_path: assets/icon/zoigl.png
+  remove_alpha_ios: true # Entfernt automatisch eventuelle Transparenzen für iOS
+flutter_native_splash:
+  color: "#ffffff" # Hintergrundfarbe (Hex)
+  image: "assets/icon/zoigl.png" # Optionales zentriertes Logo
+  ios: true
+  android: true
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
