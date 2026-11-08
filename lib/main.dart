@@ -357,7 +357,8 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   const Text(
-                    'veröffentlicht unter der Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0)\n'
+                    'steht unter Apache License 2.0\n'
+                    'https://www.apache.org/licenses/LICENSE-2.0\n'
                     '(c) 2026 Michael Graf (Zoiglbrüder Zoigl Jehovas)\n'
                     'www.grafm.net',
                   ),
