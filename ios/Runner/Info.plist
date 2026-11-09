@@ -27,26 +27,27 @@
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
 		<key>UIApplicationSceneManifest</key>
-		<dict>
-			<key>UIApplicationSupportsMultipleScenes</key>
-			<false/>
-			<key>UISceneConfigurations</key>
+<dict>
+	<key>UIApplicationSupportsMultipleScenes</key>
+	<false/>
+	<key>UISceneConfigurations</key>
+	<dict>
+		<key>UIWindowSceneSessionRoleApplication</key>
+		<array>
 			<dict>
-				<key>UIWindowSceneSessionRoleApplication</key>
-				<array>
-					<dict>
-						<key>UISceneClassName</key>
-						<string>UIWindowScene</string>
-						<key>UISceneConfigurationName</key>
-						<string>flutter</string>
-						<key>UISceneDelegateClassName</key>
-						<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
-						<key>UISceneStoryboardFile</key>
-						<string>Main</string>
-					</dict>
-				</array>
+				<key>UISceneClassName</key>
+				<string>UIWindowScene</string>
+				<key>UISceneConfigurationName</key>
+				<string>flutter</string>
+				<key>UISceneDelegateClassName</key>
+				<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
+				<key>UISceneStoryboardFile</key>
+				<string>Main</string>
 			</dict>
-		</dict>
+		</array>
+	</dict>
+</dict>
+
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 		<true/>
 		<key>UILaunchStoryboardName</key>
@@ -68,5 +69,13 @@
 		</array>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		
+		<!-- Optional: Ergänze hier Berechtigungen, falls die App diese benötigt -->
+		<!-- 
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>Wir benötigen Ihren Standort, um nahegelegene Zoigl-Stuben anzuzeigen.</string>
+		<key>NSCameraUsageDescription</key>
+		<string>Die App benötigt Zugriff auf die Kamera zum Scannen von QR-Codes.</string>
+		-->
 	</dict>
 </plist>

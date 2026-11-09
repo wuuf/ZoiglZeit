@@ -1,4 +1,4 @@
-package com.example.zoigl_zeit
+package net.grafm.zoiglzeit
 
 import io.flutter.embedding.android.FlutterActivity
 
