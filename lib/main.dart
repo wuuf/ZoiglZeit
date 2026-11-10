@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -24,9 +25,7 @@ class ZoiglApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [
-        Locale('de', 'DE'),
-      ],
+      supportedLocales: const [Locale('de', 'DE')],
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
@@ -101,6 +100,13 @@ class ZoiglEvent {
         (check.isAtSameMomentAs(end) || check.isBefore(end));
   }
 
+  /// true, wenn der letzte Ausschanktag vor [date] liegt.
+  bool endsBefore(DateTime date) {
+    final check = DateTime(date.year, date.month, date.day);
+    final end = DateTime(datumBis.year, datumBis.month, datumBis.day);
+    return end.isBefore(check);
+  }
+
   factory ZoiglEvent.fromCsvLine(String line) {
     final parts = line.split(';');
     return ZoiglEvent(
@@ -133,6 +139,7 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
   DateTime? _selectedDate;
   bool _onlyOpenToday = false;
   bool _onlyFavorites = false;
+  bool _showPast = false;
   bool _isLoading = true;
   int _currentTabIndex = 0;
 
@@ -179,7 +186,9 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
 
   Future<void> _loadCsvData() async {
     try {
-      final rawCsv = await rootBundle.loadString('assets/zoiglkalender_2026.csv');
+      final rawCsv = await rootBundle.loadString(
+        'assets/zoiglkalender_2026.csv',
+      );
       final lines = rawCsv
           .split(RegExp(r'\r?\n'))
           .where((line) => line.trim().isNotEmpty)
@@ -196,7 +205,10 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
 
       events.sort((a, b) => a.datumVon.compareTo(b.datumVon));
 
-      final orteSet = events.map((e) => e.ort).where((o) => o.isNotEmpty).toSet();
+      final orteSet = events
+          .map((e) => e.ort)
+          .where((o) => o.isNotEmpty)
+          .toSet();
       final orteList = orteSet.toList()..sort();
 
       setState(() {
@@ -212,8 +224,15 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
   }
 
   void _applyFilters() {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
     setState(() {
       _filteredEvents = _allEvents.where((event) {
+        // Vergangene Termine ausblenden – außer bei explizit gewähltem Datum
+        if (!_showPast && _selectedDate == null && event.endsBefore(today)) {
+          return false;
+        }
+
         if (_searchQuery.isNotEmpty) {
           final q = _searchQuery.toLowerCase();
           final matchWirt = event.zoiglstube.toLowerCase().contains(q);
@@ -245,7 +264,8 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
 
   Future<void> _pickDate() async {
     final now = DateTime.now();
-    final initial = _selectedDate ?? (now.year == 2026 ? now : DateTime(2026, 1, 1));
+    final initial =
+        _selectedDate ?? (now.year == 2026 ? now : DateTime(2026, 1, 1));
 
     final picked = await showDatePicker(
       context: context,
@@ -273,6 +293,7 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
       _selectedDate = null;
       _onlyOpenToday = false;
       _onlyFavorites = false;
+      _showPast = false;
     });
     _applyFilters();
   }
@@ -382,11 +403,13 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
   @override
   Widget build(BuildContext context) {
     final dateFormatter = DateFormat('dd.MM.yyyy', 'de_DE');
-    final hasActiveFilters = _searchQuery.isNotEmpty ||
+    final hasActiveFilters =
+        _searchQuery.isNotEmpty ||
         _selectedOrt != null ||
         _selectedDate != null ||
         _onlyOpenToday ||
-        _onlyFavorites;
+        _onlyFavorites ||
+        _showPast;
 
     return Scaffold(
       appBar: AppBar(
@@ -416,10 +439,11 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
                 _buildFilterHeader(dateFormatter),
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  color: Theme.of(context)
-                      .colorScheme
-                      .surfaceContainerHighest
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest
                       .withValues(alpha: 0.4),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -431,7 +455,8 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
                       if (_favoriteStuben.isNotEmpty)
                         Text(
                           '★ ${_favoriteStuben.length} Favoriten gespeichert',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
                                 color: Colors.amber.shade900,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -577,7 +602,9 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
                 const SizedBox(width: 8),
                 InputChip(
                   avatar: const Icon(Icons.location_on_outlined, size: 18),
-                  label: Text(_selectedOrt ?? 'Alle Orte (${_availableOrte.length})'),
+                  label: Text(
+                    _selectedOrt ?? 'Alle Orte (${_availableOrte.length})',
+                  ),
                   selected: _selectedOrt != null,
                   onPressed: () => _showOrtPicker(context),
                   onDeleted: _selectedOrt != null
@@ -586,6 +613,17 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
                           _applyFilters();
                         }
                       : null,
+                ),
+                const SizedBox(width: 8),
+                FilterChip(
+                  label: const Text('Vergangene'),
+                  selected: _showPast,
+                  avatar: const Icon(Icons.history, size: 18),
+                  tooltip: 'Bereits vergangene Termine anzeigen',
+                  onSelected: (val) {
+                    setState(() => _showPast = val);
+                    _applyFilters();
+                  },
                 ),
               ],
             ),
@@ -601,7 +639,11 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.sentiment_dissatisfied, size: 56, color: Colors.grey.shade400),
+            Icon(
+              Icons.sentiment_dissatisfied,
+              size: 56,
+              color: Colors.grey.shade400,
+            ),
             const SizedBox(height: 12),
             const Text(
               'Keine Zoigl-Termine für diesen Filter gefunden.',
@@ -628,7 +670,9 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
     );
   }
 
-  Widget _buildEventCard(ZoiglEvent event) {
+  /// [onFavoriteChanged] wird nach dem Umschalten eines Favoriten aufgerufen,
+  /// z. B. um ein Bottom Sheet mit eigenem State neu zu zeichnen.
+  Widget _buildEventCard(ZoiglEvent event, {VoidCallback? onFavoriteChanged}) {
     final isOpenNow = event.isOpenOn(DateTime.now());
     final isFav = _favoriteStuben.contains(event.zoiglstube);
 
@@ -645,31 +689,36 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
         contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
         leading: Container(
           width: 58,
-          padding: const EdgeInsets.symmetric(vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.primaryContainer,
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                DateFormat('dd.MM.').format(event.datumVon),
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13,
-                  color: Theme.of(context).colorScheme.onPrimaryContainer,
-                ),
-              ),
-              if (event.datumVon != event.datumBis)
+          // FittedBox verkleinert den Text bei großer Systemschrift,
+          // statt umzubrechen und die Karte überlaufen zu lassen.
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
                 Text(
-                  'bis ${DateFormat('dd.MM.').format(event.datumBis)}',
+                  DateFormat('dd.MM.').format(event.datumVon),
                   style: TextStyle(
-                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
                     color: Theme.of(context).colorScheme.onPrimaryContainer,
                   ),
                 ),
-            ],
+                if (event.datumVon != event.datumBis)
+                  Text(
+                    'bis ${DateFormat('dd.MM.').format(event.datumBis)}',
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
         title: Row(
@@ -677,7 +726,10 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
             Expanded(
               child: Text(
                 event.zoiglstube,
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
               ),
             ),
             if (isOpenNow)
@@ -704,27 +756,52 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
+              // Wrap statt Row: Auf schmalen Displays rutscht der Zeitraum
+              // in die nächste Zeile, statt den Ort zu verdrängen.
+              Wrap(
+                spacing: 10,
+                runSpacing: 2,
                 children: [
-                  const Icon(Icons.place, size: 15, color: Colors.grey),
-                  const SizedBox(width: 4),
-                  Flexible(
-                    child: Text(
-                      event.ort,
-                      style: const TextStyle(fontWeight: FontWeight.w500),
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.place, size: 15, color: Colors.grey),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          event.ort,
+                          style: const TextStyle(fontWeight: FontWeight.w500),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 10),
-                  const Icon(Icons.access_time, size: 15, color: Colors.grey),
-                  const SizedBox(width: 4),
-                  Text('${event.zeitraum} (${event.wochentage})'),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.access_time,
+                        size: 15,
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          '${event.zeitraum} (${event.wochentage})',
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
               if (event.bemerkung.isNotEmpty) ...[
                 const SizedBox(height: 6),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.amber.shade100,
                     borderRadius: BorderRadius.circular(6),
@@ -748,7 +825,10 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
             color: isFav ? Colors.red : Colors.grey,
           ),
           tooltip: isFav ? 'Aus Favoriten entfernen' : 'Als Favorit merken',
-          onPressed: () => _toggleFavorite(event.zoiglstube),
+          onPressed: () async {
+            await _toggleFavorite(event.zoiglstube);
+            onFavoriteChanged?.call();
+          },
         ),
       ),
     );
@@ -769,7 +849,9 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
       if (coords == null) return;
 
       final hasOpenToday = ortEvents.any((e) => e.isOpenOn(DateTime.now()));
-      final hasFavorite = ortEvents.any((e) => _favoriteStuben.contains(e.zoiglstube));
+      final hasFavorite = ortEvents.any(
+        (e) => _favoriteStuben.contains(e.zoiglstube),
+      );
 
       markers.add(
         Marker(
@@ -785,7 +867,10 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
                   clipBehavior: Clip.none,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: hasOpenToday ? todayColor : plannedColor,
                         borderRadius: BorderRadius.circular(16),
@@ -816,14 +901,21 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
                         child: CircleAvatar(
                           radius: 9,
                           backgroundColor: Colors.white,
-                          child: Icon(Icons.favorite, size: 12, color: Colors.red),
+                          child: Icon(
+                            Icons.favorite,
+                            size: 12,
+                            color: Colors.red,
+                          ),
                         ),
                       ),
                   ],
                 ),
                 const SizedBox(height: 2),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 5,
+                    vertical: 1,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.9),
                     borderRadius: BorderRadius.circular(4),
@@ -857,9 +949,13 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
           children: [
             TileLayer(
               urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-              userAgentPackageName: 'de.oberpfalz.zoiglkalender2026',
+              userAgentPackageName: 'net.grafm.zoiglzeit',
             ),
             MarkerLayer(markers: markers),
+            // Pflichtangabe laut OSM-Lizenz (ODbL) – dauerhaft sichtbar
+            const SimpleAttributionWidget(
+              source: Text('OpenStreetMap contributors'),
+            ),
           ],
         ),
         Positioned(
@@ -878,7 +974,10 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
                     children: [
                       Icon(Icons.circle, size: 12, color: todayColor),
                       const SizedBox(width: 6),
-                      const Text('Heute Ausschank', style: TextStyle(fontSize: 11)),
+                      const Text(
+                        'Heute Ausschank',
+                        style: TextStyle(fontSize: 11),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 4),
@@ -887,7 +986,10 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
                     children: [
                       Icon(Icons.circle, size: 12, color: plannedColor),
                       const SizedBox(width: 6),
-                      const Text('Geplante Termine', style: TextStyle(fontSize: 11)),
+                      const Text(
+                        'Geplante Termine',
+                        style: TextStyle(fontSize: 11),
+                      ),
                     ],
                   ),
                 ],
@@ -953,7 +1055,12 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
                         itemCount: ortEvents.length,
                         itemBuilder: (context, index) {
                           final ev = ortEvents[index];
-                          return _buildEventCard(ev);
+                          return _buildEventCard(
+                            ev,
+                            onFavoriteChanged: () {
+                              if (context.mounted) setModalState(() {});
+                            },
+                          );
                         },
                       ),
                     ),
@@ -1006,7 +1113,9 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
                         },
                       ),
                       ..._availableOrte.map((ort) {
-                        final count = _allEvents.where((e) => e.ort == ort).length;
+                        final count = _allEvents
+                            .where((e) => e.ort == ort)
+                            .length;
                         return ListTile(
                           leading: const Icon(Icons.location_city),
                           title: Text(ort),
@@ -1039,11 +1148,7 @@ class ZoiglStarIcon extends StatelessWidget {
   final double size;
   final Color? color;
 
-  const ZoiglStarIcon({
-    super.key,
-    this.size = 32.0,
-    this.color,
-  });
+  const ZoiglStarIcon({super.key, this.size = 32.0, this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -1058,11 +1163,7 @@ class ZoiglStarIcon extends StatelessWidget {
             size: Size(size, size),
             painter: _ZoiglStarPainter(color: starColor),
           ),
-          Icon(
-            Icons.sports_bar,
-            size: size * 0.36,
-            color: starColor,
-          ),
+          Icon(Icons.sports_bar, size: size * 0.36, color: starColor),
         ],
       ),
     );
