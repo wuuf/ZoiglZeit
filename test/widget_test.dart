@@ -47,9 +47,64 @@ void main() {
         .skip(1)
         .where((l) => l.trim().isNotEmpty);
     final orte = lines.map((l) => ZoiglEvent.fromCsvLine(l).ort).toSet();
-    final ohneKoordinaten =
-        orte.where((o) => !kOrtCoordinates.containsKey(o)).toList();
+    final ohneKoordinaten = orte
+        .where((o) => !kOrtCoordinates.containsKey(o))
+        .toList();
     expect(ohneKoordinaten, isEmpty);
+  });
+
+  group('CSV-Daten', () {
+    final events = File('assets/zoiglkalender_2026.csv')
+        .readAsLinesSync()
+        .skip(1)
+        .where((l) => l.trim().isNotEmpty)
+        .map(ZoiglEvent.fromCsvLine)
+        .toList();
+    const wochentag = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+    String fmt(DateTime d) =>
+        '${d.day.toString().padLeft(2, '0')}.${d.month.toString().padLeft(2, '0')}.';
+    String label(ZoiglEvent e) => '${e.zoiglstube} (${e.ort}) ${e.zeitraum}';
+
+    test('Zeitraum und Wochentage passen zum Datum', () {
+      final fehler = <String>[];
+      for (final e in events) {
+        final same = e.datumVon == e.datumBis;
+        final zeitraum = same
+            ? fmt(e.datumVon)
+            : '${fmt(e.datumVon)}-${fmt(e.datumBis)}';
+        final tage = same
+            ? wochentag[e.datumVon.weekday - 1]
+            : '${wochentag[e.datumVon.weekday - 1]} - '
+                  '${wochentag[e.datumBis.weekday - 1]}';
+        if (e.datumBis.isBefore(e.datumVon)) {
+          fehler.add('Ende vor Start: ${label(e)}');
+        }
+        if (e.zeitraum != zeitraum) {
+          fehler.add('Zeitraum: ${label(e)}');
+        }
+        if (e.wochentage != tage) {
+          fehler.add('Wochentage "${e.wochentage}": ${label(e)}');
+        }
+      }
+      expect(fehler, isEmpty);
+    });
+
+    test('keine überlappenden Termine derselben Zoiglstube', () {
+      final byStube = <String, List<ZoiglEvent>>{};
+      for (final e in events) {
+        byStube.putIfAbsent('${e.zoiglstube}|${e.ort}', () => []).add(e);
+      }
+      final fehler = <String>[];
+      for (final list in byStube.values) {
+        list.sort((a, b) => a.datumVon.compareTo(b.datumVon));
+        for (var i = 1; i < list.length; i++) {
+          if (!list[i].datumVon.isAfter(list[i - 1].datumBis)) {
+            fehler.add('${label(list[i - 1])} ↔ ${list[i].zeitraum}');
+          }
+        }
+      }
+      expect(fehler, isEmpty);
+    });
   });
 
   testWidgets('App startet und zeigt die Terminliste', (tester) async {
@@ -57,9 +112,9 @@ void main() {
 
     await tester.pumpWidget(const ZoiglApp());
     // Asset-Laden und SharedPreferences laufen außerhalb der Fake-Zeit.
-    await tester.runAsync(() => Future<void>.delayed(
-          const Duration(milliseconds: 500),
-        ));
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 500)),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('ZoiglZeit 2026'), findsOneWidget);
