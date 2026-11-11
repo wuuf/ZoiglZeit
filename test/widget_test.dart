@@ -41,12 +41,36 @@ void main() {
     });
   });
 
+  List<ZoiglEvent> alleEvents() => [
+    for (final asset in kCsvAssets)
+      ...File(asset)
+          .readAsLinesSync()
+          .skip(1)
+          .where((l) => l.trim().isNotEmpty)
+          .map(ZoiglEvent.fromCsvLine),
+  ];
+
+  test('Öffnungszeiten sind optional', () {
+    final e = ZoiglEvent.fromCsvLine(
+      '2027-01-02;2027-01-05;02.01.-05.01.;Sa - Di;Kramer-Wolf;Falkenberg;;ab 11 Uhr',
+    );
+    expect(e.bemerkung, isEmpty);
+    expect(e.oeffnungszeiten, 'ab 11 Uhr');
+    final ohne = ZoiglEvent.fromCsvLine(
+      '2026-01-05;2026-01-05;05.01.;Mo;Zum Waldhauser;Neustadt/WN;',
+    );
+    expect(ohne.oeffnungszeiten, isEmpty);
+  });
+
+  test('alle CSV-Assets stehen in pubspec.yaml', () {
+    final pubspec = File('pubspec.yaml').readAsStringSync();
+    for (final asset in kCsvAssets) {
+      expect(pubspec, contains('- $asset'));
+    }
+  });
+
   test('jeder Ort in der CSV hat Koordinaten für die Karte', () {
-    final lines = File('assets/zoiglkalender_2026.csv')
-        .readAsLinesSync()
-        .skip(1)
-        .where((l) => l.trim().isNotEmpty);
-    final orte = lines.map((l) => ZoiglEvent.fromCsvLine(l).ort).toSet();
+    final orte = alleEvents().map((e) => e.ort).toSet();
     final ohneKoordinaten = orte
         .where((o) => !kOrtCoordinates.containsKey(o))
         .toList();
@@ -54,12 +78,7 @@ void main() {
   });
 
   group('CSV-Daten', () {
-    final events = File('assets/zoiglkalender_2026.csv')
-        .readAsLinesSync()
-        .skip(1)
-        .where((l) => l.trim().isNotEmpty)
-        .map(ZoiglEvent.fromCsvLine)
-        .toList();
+    final events = alleEvents();
     const wochentag = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
     String fmt(DateTime d) =>
         '${d.day.toString().padLeft(2, '0')}.${d.month.toString().padLeft(2, '0')}.';
@@ -117,7 +136,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('ZoiglZeit 2026'), findsOneWidget);
+    expect(find.text('ZoiglZeit'), findsOneWidget);
     expect(find.textContaining('Terminen'), findsOneWidget);
     expect(find.text('Vergangene'), findsOneWidget);
     expect(find.byType(CircularProgressIndicator), findsNothing);

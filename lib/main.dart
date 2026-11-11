@@ -18,7 +18,7 @@ class ZoiglApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Zoiglkalender 2026',
+      title: 'Zoiglkalender',
       debugShowCheckedModeBanner: false,
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
@@ -73,6 +73,12 @@ const Map<String, LatLng> kOrtCoordinates = {
   'Windmais': LatLng(49.2869, 12.3106),
 };
 
+/// Terminlisten je Jahr (müssen auch in pubspec.yaml unter assets stehen).
+const kCsvAssets = [
+  'assets/zoiglkalender_2026.csv',
+  'assets/zoiglkalender_2027.csv',
+];
+
 class ZoiglEvent {
   final DateTime datumVon;
   final DateTime datumBis;
@@ -81,6 +87,7 @@ class ZoiglEvent {
   final String zoiglstube;
   final String ort;
   final String bemerkung;
+  final String oeffnungszeiten;
 
   ZoiglEvent({
     required this.datumVon,
@@ -90,6 +97,7 @@ class ZoiglEvent {
     required this.zoiglstube,
     required this.ort,
     required this.bemerkung,
+    this.oeffnungszeiten = '',
   });
 
   bool isOpenOn(DateTime date) {
@@ -117,6 +125,7 @@ class ZoiglEvent {
       zoiglstube: parts[4].trim(),
       ort: parts[5].trim(),
       bemerkung: parts.length > 6 ? parts[6].trim() : '',
+      oeffnungszeiten: parts.length > 7 ? parts[7].trim() : '',
     );
   }
 }
@@ -186,20 +195,19 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
 
   Future<void> _loadCsvData() async {
     try {
-      final rawCsv = await rootBundle.loadString(
-        'assets/zoiglkalender_2026.csv',
-      );
-      final lines = rawCsv
-          .split(RegExp(r'\r?\n'))
-          .where((line) => line.trim().isNotEmpty)
-          .toList();
-
       final events = <ZoiglEvent>[];
-      for (int i = 1; i < lines.length; i++) {
-        try {
-          events.add(ZoiglEvent.fromCsvLine(lines[i]));
-        } catch (e) {
-          debugPrint('Fehler in Zeile $i: ${lines[i]}');
+      for (final asset in kCsvAssets) {
+        final rawCsv = await rootBundle.loadString(asset);
+        final lines = rawCsv
+            .split(RegExp(r'\r?\n'))
+            .where((line) => line.trim().isNotEmpty)
+            .toList();
+        for (int i = 1; i < lines.length; i++) {
+          try {
+            events.add(ZoiglEvent.fromCsvLine(lines[i]));
+          } catch (e) {
+            debugPrint('Fehler in $asset Zeile $i: ${lines[i]}');
+          }
         }
       }
 
@@ -264,14 +272,29 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
 
   Future<void> _pickDate() async {
     final now = DateTime.now();
-    final initial =
-        _selectedDate ?? (now.year == 2026 ? now : DateTime(2026, 1, 1));
+    // Auswahlbereich ergibt sich aus den geladenen Terminen.
+    var first = DateTime(now.year, 1, 1);
+    var last = DateTime(now.year, 12, 31);
+    if (_allEvents.isNotEmpty) {
+      first = _allEvents
+          .map((e) => e.datumVon)
+          .reduce((a, b) => a.isBefore(b) ? a : b);
+      last = _allEvents
+          .map((e) => e.datumBis)
+          .reduce((a, b) => a.isAfter(b) ? a : b);
+      first = DateTime(first.year, 1, 1);
+      last = DateTime(last.year, 12, 31);
+    }
+    final today = DateTime(now.year, now.month, now.day);
+    var initial = _selectedDate ?? today;
+    if (initial.isBefore(first)) initial = first;
+    if (initial.isAfter(last)) initial = last;
 
     final picked = await showDatePicker(
       context: context,
       initialDate: initial,
-      firstDate: DateTime(2026, 1, 1),
-      lastDate: DateTime(2026, 12, 31),
+      firstDate: first,
+      lastDate: last,
       locale: const Locale('de', 'DE'),
       helpText: 'Ausschank-Datum wählen',
     );
@@ -418,7 +441,7 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
             ZoiglStarIcon(size: 34, color: Colors.white),
             SizedBox(width: 12),
             Text(
-              'ZoiglZeit 2026',
+              'ZoiglZeit',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
@@ -787,7 +810,11 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
                       const SizedBox(width: 4),
                       Flexible(
                         child: Text(
-                          '${event.zeitraum} (${event.wochentage})',
+                          // Jahr nur anzeigen, wenn es nicht das aktuelle ist
+                          event.datumBis.year == DateTime.now().year
+                              ? '${event.zeitraum} (${event.wochentage})'
+                              : '${event.zeitraum}${event.datumBis.year} '
+                                    '(${event.wochentage})',
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
@@ -795,6 +822,22 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
                   ),
                 ],
               ),
+              if (event.oeffnungszeiten.isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(Icons.schedule, size: 15, color: Colors.grey),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        event.oeffnungszeiten,
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
               if (event.bemerkung.isNotEmpty) ...[
                 const SizedBox(height: 6),
                 Container(

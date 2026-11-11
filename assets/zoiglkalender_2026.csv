@@ -1,4 +1,4 @@
-﻿Datum_Von;Datum_Bis;Zeitraum;Wochentage;Zoiglstube;Ort;Bemerkung
+﻿Datum_Von;Datum_Bis;Zeitraum;Wochentage;Zoiglstube;Ort;Bemerkung;Oeffnungszeiten
 2026-01-02;2026-01-03;02.01.-03.01.;Fr - Sa;Zoiglstube Schreierbräu;Windmais;
 2026-01-02;2026-01-05;02.01.-05.01.;Fr - Mo;Zum Posterer;Windischeschenbach;
 2026-01-02;2026-01-06;02.01.-06.01.;Fr - Di;Käck'n;Neuhaus;
@@ -485,61 +485,61 @@
 2026-11-13;2026-11-15;13.11.-15.11.;Fr - So;Zum Glöckerlbauer;Weiden i.d.OPf.;
 2026-11-13;2026-11-16;13.11.-16.11.;Fr - Mo;Zimmert Zoigl Hohenthan;Bärnau;
 2026-11-13;2026-11-16;13.11.-16.11.;Fr - Mo;Zum Vinzenz;Hammerles;
-2026-11-13;2026-11-16;13.11.-16.11.;Fr - Mo;Bahler;Neuhaus;
+2026-11-13;2026-11-16;13.11.-16.11.;Fr - Mo;Bahler;Neuhaus;;Fr., Sa. und Mo. ab 14 Uhr geöffnet, So. ab 10 Uhr
 2026-11-13;2026-11-16;13.11.-16.11.;Fr - Mo;Hammerer;Tirschenreuth;
-2026-11-13;2026-11-16;13.11.-16.11.;Fr - Mo;Beim Gloser;Windischeschenbach;
+2026-11-13;2026-11-16;13.11.-16.11.;Fr - Mo;Beim Gloser;Windischeschenbach;;Freitag & Montag ab 14 Uhr, Samstag & Sonntag ab 11:30 Uhr
 2026-11-14;2026-11-15;14.11.-15.11.;Sa - So;Stefflwirt;Wiesau;
 2026-11-19;2026-11-20;19.11.-20.11.;Do - Fr;Gasthaus Lober - Zur Wirti;Burkhardsreuth;
 2026-11-19;2026-11-23;19.11.-23.11.;Do - Mo;Zoiglwirtshaus;Neunkirchen b. Weiden;
 2026-11-19;2026-11-23;19.11.-23.11.;Do - Mo;Zoiglstub'n Fichtenschacht;Wiesau;
-2026-11-20;2026-11-22;20.11.-22.11.;Fr - So;Beim Strehern;Eslarn;
+2026-11-20;2026-11-22;20.11.-22.11.;Fr - So;Beim Strehern;Eslarn;;ab 14.00 Uhr, Sonntag ab 11.15 Uhr
 2026-11-20;2026-11-22;20.11.-22.11.;Fr - So;Beim Schnapper;Fuchsmühl;
 2026-11-20;2026-11-22;20.11.-22.11.;Fr - So;Zum Posterer;Windischeschenbach;
-2026-11-20;2026-11-23;20.11.-23.11.;Fr - Mo;Hafnerkarl;Falkenberg;
-2026-11-20;2026-11-23;20.11.-23.11.;Fr - Mo;Lingl-Zoigl;Neuhaus;
+2026-11-20;2026-11-23;20.11.-23.11.;Fr - Mo;Hafnerkarl;Falkenberg;;Freitag ab 14.00 Uhr, Samstag und Sonntag ab 10.00 Uhr und Montag ab 17.00 Uhr
+2026-11-20;2026-11-23;20.11.-23.11.;Fr - Mo;Lingl-Zoigl;Neuhaus;;Freitag, Samstag & Montag ab 14 Uhr, Sonntag ab 10 Uhr
 2026-11-20;2026-11-23;20.11.-23.11.;Fr - Mo;Beim Brucksaler;Neustadt/WN;
 2026-11-20;2026-11-23;20.11.-23.11.;Fr - Mo;Zum Rechersimer;Reuth b. Erbendorf;
-2026-11-20;2026-11-23;20.11.-23.11.;Fr - Mo;Schlosshof-Zoigl;Windischeschenbach;
+2026-11-20;2026-11-23;20.11.-23.11.;Fr - Mo;Schlosshof-Zoigl;Windischeschenbach;;Täglich ab 10:00 Uhr
 2026-11-27;2026-11-29;27.11.-29.11.;Fr - So;Mutzi's Zoiglstube;Nabburg;
-2026-11-27;2026-11-30;27.11.-30.11.;Fr - Mo;Käck'n;Neuhaus;
+2026-11-27;2026-11-30;27.11.-30.11.;Fr - Mo;Käck'n;Neuhaus;;Freitag und Montag ab 14.00 Uhr, Samstag und Sonntag ab 10.00 Uhr
 2026-11-27;2026-11-30;27.11.-30.11.;Fr - Mo;Zum Mundl;Störnstein;
-2026-11-27;2026-11-30;27.11.-30.11.;Fr - Mo;Kramer-Wolf;Falkenberg;
-2026-11-27;2026-11-30;27.11.-30.11.;Fr - Mo;Binner;Windischeschenbach;
+2026-11-27;2026-11-30;27.11.-30.11.;Fr - Mo;Kramer-Wolf;Falkenberg;;Freitag - Sonntag ab 11 Uhr
+2026-11-27;2026-11-30;27.11.-30.11.;Fr - Mo;Binner;Windischeschenbach;;Täglich ab 10:00 Uhr
 2026-11-27;2026-11-30;27.11.-30.11.;Fr - Mo;Fiedlschneider;Windischeschenbach;
 2026-11-28;2026-11-29;28.11.-29.11.;Sa - So;Beim Deinzer;Plößberg;
 2026-12-03;2026-12-06;03.12.-06.12.;Do - So;Schweinmühle;Windischeschenbach;
 2026-12-04;2026-12-05;04.12.-05.12.;Fr - Sa;Zoiglstube Schreierbräu;Windmais;
 2026-12-04;2026-12-06;04.12.-06.12.;Fr - So;Zum Binnerlindl;Kohlberg;
-2026-12-04;2026-12-07;04.12.-07.12.;Fr - Mo;Teicher;Neuhaus;
+2026-12-04;2026-12-07;04.12.-07.12.;Fr - Mo;Teicher;Neuhaus;;Täglich ab 10:00 Uhr
 2026-12-04;2026-12-07;04.12.-07.12.;Fr - Mo;Zum Schreiner Schorsch;Pfaffenreuth;
-2026-12-04;2026-12-07;04.12.-07.12.;Fr - Mo;Beim Gloser;Windischeschenbach;
+2026-12-04;2026-12-07;04.12.-07.12.;Fr - Mo;Beim Gloser;Windischeschenbach;;Freitag & Montag ab 14 Uhr, Samstag & Sonntag ab 11:30 Uhr
 2026-12-10;2026-12-11;10.12.-11.12.;Do - Fr;Zum Lohbinder;Trausnitz;
 2026-12-10;2026-12-13;10.12.-13.12.;Do - So;Brauwerk;Mitterteich;
 2026-12-10;2026-12-13;10.12.-13.12.;Do - So;Brauhaus;Waldershof;
 2026-12-10;2026-12-14;10.12.-14.12.;Do - Mo;Zoiglstub'n Fichtenschacht;Wiesau;
-2026-12-11;2026-12-13;11.12.-13.12.;Fr - So;Beim Strehern;Eslarn;
+2026-12-11;2026-12-13;11.12.-13.12.;Fr - So;Beim Strehern;Eslarn;;ab 14.00 Uhr, Sonntag ab 11.15 Uhr
 2026-12-11;2026-12-13;11.12.-13.12.;Fr - So;Beim Schnapper;Fuchsmühl;
 2026-12-11;2026-12-13;11.12.-13.12.;Fr - So;Grandlhof-Zoigl;Krummennaab;
 2026-12-11;2026-12-13;11.12.-13.12.;Fr - So;Mutzi's Zoiglstube;Nabburg;
 2026-12-11;2026-12-13;11.12.-13.12.;Fr - So;Zum Glöckerlbauer;Weiden i.d.OPf.;
 2026-12-11;2026-12-13;11.12.-13.12.;Fr - So;Zum Roud'n;Windischeschenbach;
 2026-12-11;2026-12-14;11.12.-14.12.;Fr - Mo;Zum Vinzenz;Hammerles;
-2026-12-11;2026-12-14;11.12.-14.12.;Fr - Mo;Schoilmichl;Neuhaus;
+2026-12-11;2026-12-14;11.12.-14.12.;Fr - Mo;Schoilmichl;Neuhaus;;Täglich ab 10:00 Uhr
 2026-12-11;2026-12-14;11.12.-14.12.;Fr - Mo;Zum Rechersimer;Reuth b. Erbendorf;
 2026-12-11;2026-12-15;11.12.-15.12.;Fr - Di;Zum Waldhauser;Neustadt/WN;
 2026-12-12;2026-12-13;12.12.-13.12.;Sa - So;Stefflwirt;Wiesau;
 2026-12-17;2026-12-18;17.12.-18.12.;Do - Fr;Gasthaus Lober - Zur Wirti;Burkhardsreuth;
 2026-12-18;2026-12-20;18.12.-20.12.;Fr - So;Zum Sprea'n;Waldsassen;
 2026-12-18;2026-12-20;18.12.-20.12.;Fr - So;Zum Posterer;Windischeschenbach;
-2026-12-18;2026-12-21;18.12.-21.12.;Fr - Mo;Hafnerkarl;Falkenberg;
-2026-12-18;2026-12-21;18.12.-21.12.;Fr - Mo;Lingl-Zoigl;Neuhaus;
+2026-12-18;2026-12-21;18.12.-21.12.;Fr - Mo;Hafnerkarl;Falkenberg;;Freitag ab 14.00 Uhr, Samstag und Sonntag ab 10.00 Uhr und Montag ab 17.00 Uhr
+2026-12-18;2026-12-21;18.12.-21.12.;Fr - Mo;Lingl-Zoigl;Neuhaus;;Freitag, Samstag & Montag ab 14 Uhr, Sonntag ab 10 Uhr
 2026-12-18;2026-12-21;18.12.-21.12.;Fr - Mo;Beim Brucksaler;Neustadt/WN;
-2026-12-18;2026-12-21;18.12.-21.12.;Fr - Mo;Schlosshof-Zoigl;Windischeschenbach;
-2026-12-27;2026-12-30;27.12.-30.12.;So - Mi;Binner;Windischeschenbach;
+2026-12-18;2026-12-21;18.12.-21.12.;Fr - Mo;Schlosshof-Zoigl;Windischeschenbach;;Täglich ab 10:00 Uhr
+2026-12-27;2026-12-30;27.12.-30.12.;So - Mi;Binner;Windischeschenbach;;Täglich ab 10:00 Uhr
 2026-12-27;2026-12-30;27.12.-30.12.;So - Mi;Fiedlschneider;Windischeschenbach;
 2026-12-28;2026-12-30;28.12.-30.12.;Mo - Mi;Zimmert Zoigl Hohenthan;Bärnau;
 2026-12-28;2026-12-30;28.12.-30.12.;Mo - Mi;Wolfadl;Falkenberg;
-2026-12-28;2026-12-30;28.12.-30.12.;Mo - Mi;Bahler;Neuhaus;
-2026-12-28;2026-12-30;28.12.-30.12.;Mo - Mi;Schafferhof;Neuhaus;
+2026-12-28;2026-12-30;28.12.-30.12.;Mo - Mi;Bahler;Neuhaus;;Fr., Sa. und Mo. ab 14 Uhr geöffnet, So. ab 10 Uhr
+2026-12-28;2026-12-30;28.12.-30.12.;Mo - Mi;Schafferhof;Neuhaus;;Freitag & Montag ab 14 Uhr, Samstag & Sonn- und Feiertag ab 10 Uhr
 2026-12-29;2026-12-30;29.12.-30.12.;Di - Mi;Hammerer;Tirschenreuth;
 2026-12-31;2026-12-31;31.12.;Do;Beim Deinzer;Plößberg;
