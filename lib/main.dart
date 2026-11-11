@@ -7,6 +7,10 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart' hide Path;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+const String kGithubUrl = 'https://github.com/wuuf/ZoiglZeit';
+const String kKontaktEmail = 'migraf18+zoiglzeit@gmail.com';
 
 void main() {
   runApp(const ZoiglApp());
@@ -321,6 +325,26 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
     _applyFilters();
   }
 
+  /// Öffnet [url] im externen Browser; zeigt bei Fehler einen Hinweis.
+  Future<void> _openUrl(String url) async {
+    bool ok;
+    try {
+      ok = await launchUrl(
+        Uri.parse(url),
+        mode: LaunchMode.externalApplication,
+      );
+    } catch (e) {
+      debugPrint('Link konnte nicht geöffnet werden: $e');
+      ok = false;
+    }
+    if (!ok && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Link konnte nicht geöffnet werden: $url')),
+      );
+    }
+  }
+
+  /// Öffnet das Impressum als BottomSheet inklusive GitHub-Link
   void _showImpressum(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -330,7 +354,7 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
       ),
       builder: (ctx) {
         return DraggableScrollableSheet(
-          initialChildSize: 0.6,
+          initialChildSize: 0.65,
           maxChildSize: 0.9,
           minChildSize: 0.4,
           expand: false,
@@ -364,47 +388,94 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
                     ],
                   ),
                   const Divider(height: 20),
-                  //const Text(
-                  //  'Autor der App:',
-                  //  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  //),
-                  //const SizedBox(height: 4),
-                  //const Text(
-                  //  'Michael Graf für Zoigl Jehovas\n'
-                  //  'migraf18@gmail.com\n'
-                  //  '\n'
-                  //  'www.grafm.net'
-                  //),
-                  const SizedBox(height: 12),
                   const Text(
-                    'Datenquelle:',
+                    'Entwickler:',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   const SizedBox(height: 4),
                   const Text(
-                    'Tourismusverband Oberpfälzer Wald\n'
-                    'Web: www.oberpfaelzerwald.de',
+                    'Michael Graf\n'
+                    '(von den Zoigl Jehovas)\n'
+                    'Am Sonnenhang 18\n'
+                    '94539 Grafling',
+                  ),
+                  const SizedBox(height: 4),
+                  InkWell(
+                    borderRadius: BorderRadius.circular(4),
+                    onTap: () => _openUrl('mailto:$kKontaktEmail'),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 4),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.mail_outline,
+                            size: 16,
+                            color: Colors.blue,
+                          ),
+                          SizedBox(width: 6),
+                          Flexible(
+                            child: Text(
+                              'E-Mail: $kKontaktEmail',
+                              style: TextStyle(
+                                color: Colors.blue,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 12),
                   const Text(
-                    'Hinweise:',
+                    'Hobbyprojekt:',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   const SizedBox(height: 4),
                   const Text(
-                    'Die auf Meldung der Wirte bzw. Gemeinden beruhenden Angaben '
-                    'wurden sorgfältig erhoben und bearbeitet. Änderungen und Irrtum vorbehalten.',
+                    'ZoiglZeit ist ein privates Hobbyprojekt ohne kommerzielle '
+                    'Absichten.',
                   ),
                   const SizedBox(height: 12),
                   const Text(
-                    'Urheberrecht:',
+                    'Quellcode:',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
+                  const SizedBox(height: 4),
+                  InkWell(
+                    borderRadius: BorderRadius.circular(4),
+                    onTap: () => _openUrl(kGithubUrl),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 4),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.open_in_new, size: 16, color: Colors.blue),
+                          SizedBox(width: 6),
+                          Flexible(
+                            child: Text(
+                              'GitHub-Projekt: $kGithubUrl',
+                              style: TextStyle(
+                                color: Colors.blue,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
                   const Text(
-                    'steht unter Apache License 2.0\n'
-                    'https://www.apache.org/licenses/LICENSE-2.0\n'
-                    '(c) 2026 Michael Graf (Zoiglbrüder Zoigl Jehovas)\n'
-                    'www.grafm.net',
+                    'Hinweise zum Zoiglkalender:',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Die Termine stammen aus öffentlich zugänglichen Quellen im '
+                    'Internet und sind nicht zu 100 % verlässlich. Alle Angaben '
+                    'ohne Gewähr.',
                   ),
                   const SizedBox(height: 20),
                   Center(
@@ -441,7 +512,7 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
             ZoiglStarIcon(size: 34, color: Colors.white),
             SizedBox(width: 12),
             Text(
-              'ZoiglZeit',
+              'Zoiglkalender',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ],

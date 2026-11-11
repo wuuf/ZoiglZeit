@@ -136,7 +136,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('ZoiglZeit'), findsOneWidget);
+    expect(find.text('Zoiglkalender'), findsOneWidget);
     expect(find.textContaining('Terminen'), findsOneWidget);
     expect(find.text('Vergangene'), findsOneWidget);
     expect(find.byType(CircularProgressIndicator), findsNothing);
