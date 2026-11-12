@@ -6,6 +6,12 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "8765", "--directory", "build/web"],
       "port": 8765
+    },
+    {
+      "name": "homepage",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8766", "--directory", "docs"],
+      "port": 8766
     }
   ]
 }
