@@ -79,6 +79,7 @@ flutter:
   assets:
     - assets/zoiglkalender_2026.csv
     - assets/zoiglkalender_2027.csv
+    - assets/zoiglstuben.csv
 
   # To add assets to your application, add an assets section, like this:
   # assets:

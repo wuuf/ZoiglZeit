@@ -9,6 +9,8 @@ import 'package:latlong2/latlong.dart' hide Path;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'stube_detail_page.dart';
+
 const String kGithubUrl = 'https://github.com/wuuf/ZoiglZeit';
 const String kKontaktEmail = 'migraf18+zoiglzeit@gmail.com';
 
@@ -83,6 +85,42 @@ const kCsvAssets = [
   'assets/zoiglkalender_2027.csv',
 ];
 
+/// Stammdaten der Zoiglstuben (Homepage), Schlüssel: Zoiglstube + Ort.
+const kStubenAsset = 'assets/zoiglstuben.csv';
+
+/// Liest die Homepages aus [kStubenAsset]; Schlüssel siehe [stubenKey].
+Map<String, String> parseStubenHomepages(String rawCsv) {
+  final result = <String, String>{};
+  final lines = rawCsv
+      .split(RegExp(r'\r?\n'))
+      .where((line) => line.trim().isNotEmpty)
+      .skip(1);
+  for (final line in lines) {
+    final parts = line.split(';');
+    if (parts.length < 3 || parts[2].trim().isEmpty) continue;
+    result[stubenKey(parts[0].trim(), parts[1].trim())] = parts[2].trim();
+  }
+  return result;
+}
+
+String stubenKey(String zoiglstube, String ort) => '$zoiglstube|$ort';
+
+/// Öffnet [url] im externen Browser; zeigt bei Fehler einen Hinweis.
+Future<void> openExternalUrl(BuildContext context, String url) async {
+  bool ok;
+  try {
+    ok = await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+  } catch (e) {
+    debugPrint('Link konnte nicht geöffnet werden: $e');
+    ok = false;
+  }
+  if (!ok && context.mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Link konnte nicht geöffnet werden: $url')),
+    );
+  }
+}
+
 class ZoiglEvent {
   final DateTime datumVon;
   final DateTime datumBis;
@@ -146,6 +184,7 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
   List<ZoiglEvent> _filteredEvents = [];
   List<String> _availableOrte = [];
   Set<String> _favoriteStuben = {};
+  Map<String, String> _homepages = {};
 
   String _searchQuery = '';
   String? _selectedOrt;
@@ -217,6 +256,16 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
 
       events.sort((a, b) => a.datumVon.compareTo(b.datumVon));
 
+      // Homepages sind optional – Fehler hier dürfen die Termine nicht stoppen.
+      var homepages = <String, String>{};
+      try {
+        homepages = parseStubenHomepages(
+          await rootBundle.loadString(kStubenAsset),
+        );
+      } catch (e) {
+        debugPrint('Fehler beim Laden der Zoiglstuben: $e');
+      }
+
       final orteSet = events
           .map((e) => e.ort)
           .where((o) => o.isNotEmpty)
@@ -225,6 +274,7 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
 
       setState(() {
         _allEvents = events;
+        _homepages = homepages;
         _availableOrte = orteList;
         _isLoading = false;
       });
@@ -325,23 +375,25 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
     _applyFilters();
   }
 
-  /// Öffnet [url] im externen Browser; zeigt bei Fehler einen Hinweis.
-  Future<void> _openUrl(String url) async {
-    bool ok;
-    try {
-      ok = await launchUrl(
-        Uri.parse(url),
-        mode: LaunchMode.externalApplication,
-      );
-    } catch (e) {
-      debugPrint('Link konnte nicht geöffnet werden: $e');
-      ok = false;
-    }
-    if (!ok && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Link konnte nicht geöffnet werden: $url')),
-      );
-    }
+  Future<void> _openUrl(String url) => openExternalUrl(context, url);
+
+  /// Öffnet die Detailseite der Zoiglstube von [event].
+  Future<void> _openStubeDetails(ZoiglEvent event) async {
+    final termine = _allEvents
+        .where((e) => e.zoiglstube == event.zoiglstube && e.ort == event.ort)
+        .toList();
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => ZoiglStubeDetailPage(
+          zoiglstube: event.zoiglstube,
+          ort: event.ort,
+          homepage: _homepages[stubenKey(event.zoiglstube, event.ort)],
+          termine: termine,
+          isFavorite: () => _favoriteStuben.contains(event.zoiglstube),
+          onToggleFavorite: () => _toggleFavorite(event.zoiglstube),
+        ),
+      ),
+    );
   }
 
   /// Öffnet das Impressum als BottomSheet inklusive GitHub-Link
@@ -779,7 +831,13 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
             ? BorderSide(color: Colors.amber.shade800, width: 1.5)
             : BorderSide.none,
       ),
+      clipBehavior: Clip.antiAlias,
       child: ListTile(
+        onTap: () async {
+          await _openStubeDetails(event);
+          // Favorit kann auf der Detailseite geändert worden sein.
+          onFavoriteChanged?.call();
+        },
         contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
         leading: Container(
           width: 58,
