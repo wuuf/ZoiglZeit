@@ -67,118 +67,121 @@ class _ZoiglStubeDetailPageState extends State<ZoiglStubeDetailPage> {
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          Row(
-            children: [
-              Icon(Icons.place, color: Theme.of(context).colorScheme.primary),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  widget.ort,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              ),
-              if (heuteOffen)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 3,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.amber.shade800,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Text(
-                    'HEUTE OFFEN',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                    ),
+      body: SafeArea(
+        top: false,
+        bottom: false,
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            Row(
+              children: [
+                Icon(Icons.place, color: Theme.of(context).colorScheme.primary),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    widget.ort,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          _buildHomepage(context),
-          if (widget.showMap && coords != null) ...[
-            const SizedBox(height: 16),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: SizedBox(
-                height: 180,
-                child: FlutterMap(
-                  options: MapOptions(
-                    initialCenter: coords,
-                    initialZoom: 12.5,
-                    interactionOptions: const InteractionOptions(
-                      flags: InteractiveFlag.none,
+                if (heuteOffen)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 3,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.amber.shade800,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Text(
+                      'HEUTE OFFEN',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                  children: [
-                    TileLayer(
-                      urlTemplate:
-                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                      userAgentPackageName: 'net.grafm.zoiglzeit',
+              ],
+            ),
+            const SizedBox(height: 12),
+            _buildHomepage(context),
+            if (widget.showMap && coords != null) ...[
+              const SizedBox(height: 16),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: SizedBox(
+                  height: 180,
+                  child: FlutterMap(
+                    options: MapOptions(
+                      initialCenter: coords,
+                      initialZoom: 12.5,
+                      interactionOptions: const InteractionOptions(
+                        flags: InteractiveFlag.none,
+                      ),
                     ),
-                    MarkerLayer(
-                      markers: [
-                        Marker(
-                          point: coords,
-                          width: 34,
-                          height: 34,
-                          child: CircleAvatar(
-                            backgroundColor: heuteOffen
-                                ? Colors.amber.shade800
-                                : Theme.of(context).colorScheme.primary,
-                            child: const ZoiglStarIcon(
-                              size: 20,
-                              color: Colors.white,
+                    children: [
+                      TileLayer(
+                        urlTemplate:
+                            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        userAgentPackageName: 'net.grafm.zoiglzeit',
+                      ),
+                      MarkerLayer(
+                        markers: [
+                          Marker(
+                            point: coords,
+                            width: 34,
+                            height: 34,
+                            child: CircleAvatar(
+                              backgroundColor: heuteOffen
+                                  ? Colors.amber.shade800
+                                  : Theme.of(context).colorScheme.primary,
+                              child: const ZoiglStarIcon(
+                                size: 20,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SimpleAttributionWidget(
-                      source: Text('OpenStreetMap contributors'),
-                    ),
-                  ],
+                        ],
+                      ),
+                      const SimpleAttributionWidget(
+                        source: Text('OpenStreetMap contributors'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 4),
-              child: Text(
-                'Kartenpunkt zeigt den Ort, nicht die genaue Adresse.',
-                style: Theme.of(context).textTheme.bodySmall,
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  'Kartenpunkt zeigt den Ort, nicht die genaue Adresse.',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
               ),
+            ],
+            const SizedBox(height: 20),
+            Text(
+              'Nächste Termine (${kommend.length})',
+              style: Theme.of(context).textTheme.titleMedium
+                  ?.copyWith(fontWeight: FontWeight.bold),
             ),
+            const SizedBox(height: 8),
+            if (kommend.isEmpty)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: Text('Keine anstehenden Termine bekannt.'),
+              ),
+            ...kommend.map((e) => _buildTermin(context, e, now)),
+            if (vergangen.isNotEmpty)
+              ExpansionTile(
+                tilePadding: EdgeInsets.zero,
+                title: Text('Vergangene Termine (${vergangen.length})'),
+                children: vergangen
+                    .map((e) => _buildTermin(context, e, now))
+                    .toList(),
+              ),
           ],
-          const SizedBox(height: 20),
-          Text(
-            'Nächste Termine (${kommend.length})',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8),
-          if (kommend.isEmpty)
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 8),
-              child: Text('Keine anstehenden Termine bekannt.'),
-            ),
-          ...kommend.map((e) => _buildTermin(context, e, now)),
-          if (vergangen.isNotEmpty)
-            ExpansionTile(
-              tilePadding: EdgeInsets.zero,
-              title: Text('Vergangene Termine (${vergangen.length})'),
-              children: vergangen
-                  .map((e) => _buildTermin(context, e, now))
-                  .toList(),
-            ),
-        ],
+        ),
       ),
     );
   }

@@ -578,45 +578,51 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
             ),
         ],
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Column(
-              children: [
-                _buildFilterHeader(dateFormatter),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  color: Theme.of(context).colorScheme.surfaceContainerHighest
-                      .withValues(alpha: 0.4),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '${_filteredEvents.length} von ${_allEvents.length} Terminen',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      if (_favoriteStuben.isNotEmpty)
+      // SafeArea links/rechts: Kamera und Statusanzeige können bei neueren
+      // Geräten (z. B. iPhone Duo) seitlich im Inhaltsbereich liegen.
+      body: SafeArea(
+        top: false,
+        bottom: false,
+        child: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
+                children: [
+                  _buildFilterHeader(dateFormatter),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest
+                        .withValues(alpha: 0.4),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
                         Text(
-                          '★ ${_favoriteStuben.length} Favoriten gespeichert',
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(
-                                color: Colors.amber.shade900,
-                                fontWeight: FontWeight.w600,
-                              ),
+                          '${_filteredEvents.length} von ${_allEvents.length} Terminen',
+                          style: Theme.of(context).textTheme.bodySmall,
                         ),
-                    ],
+                        if (_favoriteStuben.isNotEmpty)
+                          Text(
+                            '★ ${_favoriteStuben.length} Favoriten gespeichert',
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: Colors.amber.shade900,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                          ),
+                      ],
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: _currentTabIndex == 0
-                      ? _buildListView()
-                      : _buildMapView(),
-                ),
-              ],
-            ),
+                  Expanded(
+                    child: _currentTabIndex == 0
+                        ? _buildListView()
+                        : _buildMapView(),
+                  ),
+                ],
+              ),
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentTabIndex,
         onDestinationSelected: (index) {
