@@ -77,6 +77,8 @@
 		<key>NSCameraUsageDescription</key>
 		<string>Die App benötigt Zugriff auf die Kamera zum Scannen von QR-Codes.</string>
 		-->
+		<key>ITSAppUsesNonExemptEncryption</key>
+		<false/>
 		<key>LSApplicationQueriesSchemes</key>
 		<array>
   			<string>https</string>
