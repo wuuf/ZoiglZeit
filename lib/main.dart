@@ -12,6 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'stube_detail_page.dart';
 
 const String kGithubUrl = 'https://github.com/wuuf/ZoiglZeit';
+const String kHomepageUrl = 'https://zoiglzeit.grafm.net/';
 const String kKontaktEmail = 'migraf18+zoiglzeit@gmail.com';
 
 void main() {
@@ -488,6 +489,35 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
                   const Text(
                     'ZoiglZeit ist ein privates Hobbyprojekt ohne kommerzielle '
                     'Absichten.',
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'Homepage:',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  const SizedBox(height: 4),
+                  InkWell(
+                    borderRadius: BorderRadius.circular(4),
+                    onTap: () => _openUrl(kHomepageUrl),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 4),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.open_in_new, size: 16, color: Colors.blue),
+                          SizedBox(width: 6),
+                          Flexible(
+                            child: Text(
+                              'zoiglzeit.grafm.net',
+                              style: TextStyle(
+                                color: Colors.blue,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 12),
                   const Text(

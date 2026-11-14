@@ -1,0 +1,31 @@
+SCREEN RECORDING
+A screen recording captured on a physical iPhone running the latest iOS is attached in the "Attachment" field of this section. It starts with launching the app and shows the typical user flow. The app has no account registration, no login, no user-generated content and no paid content.
+
+1. PURPOSE AND TARGET AUDIENCE
+ZoiglZeit is a free calendar app for "Zoigl", a traditional beer brewed in community brewhouses in the northern Upper Palatinate (Oberpfalz), Bavaria, Germany. Zoigl is served only on specific dates in private taverns ("Zoiglstuben") that take turns opening throughout the year. These dates are scattered across printed calendars and many small websites, so it is hard to know which tavern is open on a given day.
+The app solves this by listing all known dates in one place and showing at a glance which taverns are open today, where they are located (map) and when they open next.
+Target audience: adult locals and visitors/tourists of the region who want to visit a Zoigl tavern. The app does not sell, advertise or deliver alcohol; it only shows opening dates and locations. It is a private, non-commercial hobby project without ads, tracking or in-app purchases.
+
+2. HOW TO USE THE MAIN FEATURES
+No login, setup or sample files are required. All features are available immediately after launch:
+- Event list ("Terminliste"): all current and upcoming dates; taverns open today are highlighted in orange ("OFFEN").
+- Filters: "Heute offen" (open today), "Favoriten" (favorites), "Datum wählen" (pick a date), "Vergangene" (past dates); search field for tavern, town or occasion.
+- Tavern detail page: tap any entry to see location map, homepage link (opens Safari), opening hours and all upcoming and past dates.
+- Favorites: tap the heart icon; favorites are stored locally on the device only.
+- Map ("Zoigl-Karte" tab): all towns with Zoigl taverns; orange = serving today, green = planned dates.
+- Info button (i): legal notice (Impressum) with developer contact.
+
+3. EXTERNAL SERVICES
+- OpenStreetMap tile server (tile.openstreetmap.org): map tiles for the map views. No API key, no user data sent besides the technically required request.
+- The event data is bundled inside the app (CSV files). It was compiled from publicly available Zoigl calendars and tavern websites (e.g. zoiglbier.de). The app has no backend server of its own.
+- Links to tavern websites and the developer e-mail open in Safari or the Mail app.
+There are no authentication services, payment processors, analytics, advertising or AI services.
+
+4. REGIONAL DIFFERENCES
+The app works identically in all regions. Its content is in German and covers events in the Upper Palatinate region of Germany.
+
+5. REGULATED INDUSTRY / THIRD-PARTY MATERIAL
+The app does not operate in a regulated industry and does not sell or deliver alcohol. Map data is © OpenStreetMap contributors, used under the Open Database License (ODbL) with attribution shown on every map. The event dates are publicly published facts (dates and places); no copyrighted texts or images from third parties are included.
+
+Privacy policy: https://zoiglzeit.grafm.net/datenschutz.html
+Support: https://zoiglzeit.grafm.net/

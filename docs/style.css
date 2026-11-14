@@ -158,6 +158,23 @@ h2 { font-family: var(--serif); font-size: clamp(30px, 4vw, 42px); line-height: 
 .btn svg { width: 20px; height: 20px; fill: currentColor; }
 @media (max-width: 680px) { .oss .box { grid-template-columns: 1fr; padding: 28px; } }
 
+/* Spende */
+.spende .box {
+  background: linear-gradient(160deg, var(--green-900), var(--green-950)); color: #f8f4e8;
+  border-radius: 24px; padding: 40px; display: grid; grid-template-columns: auto 1fr auto;
+  gap: 28px; align-items: center;
+}
+.spende .mug { width: 96px; height: 96px; }
+.spende h2 { margin: 4px 0 8px; }
+.spende p { margin: 0; color: #d9d3bf; }
+.btn.gold { background: var(--gold); color: var(--green-950); white-space: nowrap; }
+.btn.gold:hover { background: var(--gold-soft); }
+@media (max-width: 760px) {
+  .spende .box { grid-template-columns: 1fr; padding: 28px; }
+  .spende .mug { width: 72px; height: 72px; }
+  .btn.gold { justify-self: start; }
+}
+
 /* FAQ */
 .faq details { border-bottom: 1px solid var(--line); padding: 18px 0; }
 .faq summary { cursor: pointer; font-weight: 600; font-size: 18px; list-style: none; display: flex; justify-content: space-between; gap: 16px; }

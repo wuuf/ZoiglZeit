@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>ZoiglZeit Suchergebnis 3840x2560</title>
+<style>
+  /* Vorlage: Apple "Search Results" 3840x2560,
+     Art Safe Area 2168x1030 zentriert (x 836–3004, y 765–1795). */
+  html, body { margin: 0; width: 3840px; height: 2560px; overflow: hidden; }
+  body {
+    position: relative;
+    background:
+      radial-gradient(1500px 900px at 50% 48%, rgba(227,184,94,.20), transparent 70%),
+      radial-gradient(1500px 1000px at 8% 100%, rgba(27,94,32,.55), transparent 70%),
+      radial-gradient(1500px 1000px at 92% 100%, rgba(27,94,32,.55), transparent 70%),
+      linear-gradient(160deg, #1a3d34 0%, #0f2a24 60%, #0b201b 100%);
+    font-family: -apple-system, "Helvetica Neue", sans-serif;
+    color: #f8f4e8;
+  }
+  .watermark { position: absolute; left: 50%; top: 50%; width: 2300px; height: 2300px;
+    transform: translate(-50%, -50%); color: rgba(227,184,94,.07); }
+
+  /* Textblock komplett innerhalb der Safe Area */
+  .center { position: absolute; left: 50%; top: 1280px; transform: translate(-50%, -50%);
+    width: 1300px; text-align: center; }
+  .icon { width: 230px; height: 230px; border-radius: 52px; display: block; margin: 0 auto 40px;
+    box-shadow: 0 24px 64px rgba(0,0,0,.45), 0 0 0 3px rgba(241,215,154,.35); }
+  .eyebrow { font-size: 34px; letter-spacing: 12px; text-transform: uppercase; color: #e3b85e;
+    margin-bottom: 28px; font-weight: 600; }
+  h1 { font-family: "Iowan Old Style", Palatino, Georgia, serif; font-weight: 600;
+    font-size: 210px; line-height: 1; margin: 0; letter-spacing: -2px; }
+  .tag { font-family: "Iowan Old Style", Palatino, Georgia, serif; font-size: 88px; color: #e3b85e;
+    margin: 30px 0 24px; }
+  .sub { font-size: 46px; color: #d9d3bf; }
+
+  .phone { position: absolute; width: 600px; height: 1304px; border-radius: 92px; padding: 18px;
+    background: #070b09; box-shadow: 0 50px 120px rgba(0,0,0,.55), inset 0 0 0 4px #2d3a35; }
+  .phone img { width: 100%; height: 100%; border-radius: 76px; object-fit: cover; display: block; }
+  .l1 { left: 170px;  top: 700px; transform: rotate(-8deg); }
+  .l2 { left: 640px;  top: 600px; transform: rotate(-2deg); z-index: 2; }
+  .r1 { right: 640px; top: 600px; transform: rotate(2deg); z-index: 2; }
+  .r2 { right: 170px; top: 700px; transform: rotate(8deg); }
+
+  /* nur für die Kontrollansicht (?safe) */
+  .safe { display: none; position: absolute; left: 836px; top: 765px; width: 2168px; height: 1030px;
+    outline: 6px solid #00ff3c; z-index: 10; }
+  body.show-safe .safe { display: block; }
+</style>
+</head>
+<body>
+  <svg class="watermark" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round">
+    <path d="M50 6 88 72H12z"/><path d="M50 94 12 28h76z"/>
+  </svg>
+
+  <div class="phone l1"><img src="../ios-6.9/04-favoriten.jpg" alt=""></div>
+  <div class="phone l2"><img src="../ios-6.9/01-terminliste.jpg" alt=""></div>
+  <div class="phone r1"><img src="../ios-6.9/02-karte.jpg" alt=""></div>
+  <div class="phone r2"><img src="../ios-6.9/03-zoiglstube.jpg" alt=""></div>
+
+  <div class="center">
+    <img class="icon" src="../../docs/img/icon.png" alt="">
+    <div class="eyebrow">Oberpfälzer Wirtskultur</div>
+    <h1>ZoiglZeit</h1>
+    <div class="tag">Wo gibt’s heute Zoigl?</div>
+    <div class="sub">Alle Zoigl-Termine · Karte · Favoriten</div>
+  </div>
+
+  <div class="safe"></div>
+  <script>if (location.search.includes('safe')) document.body.classList.add('show-safe');</script>
+</body>
+</html>
