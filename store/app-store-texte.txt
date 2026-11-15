@@ -1,0 +1,50 @@
+NAME (max. 30)
+ZoiglZeit
+
+UNTERTITEL (max. 30)
+Zoigl-Termine der Oberpfalz
+
+WERBETEXT (max. 170)
+Wo gibt's heute Zoigl? ZoiglZeit zeigt dir alle Ausschanktermine der Zoiglstuben in der Oberpfalz – mit Karte, Favoriten und Suche. Kostenlos und ohne Werbung.
+
+KEYWORDS (max. 100, durch Komma getrennt, ohne Leerzeichen)
+Zoigl,Zoiglstube,Zoiglbier,Bier,Oberpfalz,Kalender,Windischeschenbach,Neuhaus,Falkenberg,Mitterteich
+
+BESCHREIBUNG (max. 4000)
+Wo gibt's heute Zoigl?
+
+Zoigl ist das traditionelle Kommunbrauer-Bier der nördlichen Oberpfalz. Ausgeschenkt wird es nur an bestimmten Tagen, und die Zoiglstuben wechseln sich das ganze Jahr über ab. Die Termine sind bisher auf Kalender und viele kleine Websites verstreut – ZoiglZeit bringt sie in eine App.
+
+AUF EINEN BLICK
+• Über 650 Termine von mehr als 40 Zoiglstuben in 26 Orten
+• Heute geöffnete Stuben sind orange hervorgehoben
+• Karte mit allen Zoiglorten: orange = heute offen, grün = geplante Termine
+• Favoriten: Markiere deine Lieblingsstuben mit dem Herz
+• Suche nach Zoiglstube, Ort oder Anlass
+• Filter für „Heute offen“, Favoriten, ein bestimmtes Datum und vergangene Termine
+• Detailseite jeder Stube mit Lageplan, Öffnungszeiten, Homepage und allen Terminen
+
+EINFACH UND PRIVAT
+• Keine Anmeldung, kein Konto
+• Keine Werbung, kein Tracking, keine In-App-Käufe
+• Favoriten bleiben nur auf deinem Gerät
+• Die Termine sind in der App enthalten und funktionieren auch ohne Netz; nur die Karte braucht eine Internetverbindung
+
+EIN HOBBYPROJEKT
+ZoiglZeit ist ein privates, nicht-kommerzielles Projekt und Open Source. Alle Angaben ohne Gewähr – kurzfristige Änderungen sind bei den Zoiglstuben immer möglich. Fehlt ein Termin oder stimmt etwas nicht? Schreib mir über das Impressum in der App.
+
+Kartendaten © OpenStreetMap-Mitwirkende.
+
+Prost und viel Spaß beim Zoigln!
+
+SUPPORT-URL
+https://zoiglzeit.grafm.net/
+
+MARKETING-URL
+https://zoiglzeit.grafm.net/
+
+DATENSCHUTZ-URL
+https://zoiglzeit.grafm.net/datenschutz.html
+
+COPYRIGHT
+2026 Michael Graf
