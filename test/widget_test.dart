@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:zoigl_zeit/main.dart';
@@ -70,42 +71,89 @@ void main() {
     }
   });
 
-  group('Zoiglstuben-Homepages', () {
+  group('Zoiglstuben-Stammdaten', () {
     final raw = File(kStubenAsset).readAsStringSync();
-    final homepages = parseStubenHomepages(raw);
+    final stuben = parseStuben(raw);
 
-    test('parst Zeilen und überspringt leere Homepages', () {
-      final h = parseStubenHomepages(
-        '﻿Zoiglstube;Ort;Homepage\r\n'
-        'Bahler;Neuhaus;https://bahler-zoigl.de/\r\n'
-        'Zum Mundl;Störnstein;\r\n',
+    test('parst Zeilen, leere Felder werden null', () {
+      final s = parseStuben(
+        '﻿Zoiglstube;Ort;Homepage;Adresse;Lat;Lon\r\n'
+        'Bahler;Neuhaus;https://bahler-zoigl.de/;Marktplatz 12, 92670 Windischeschenbach;49.80055;12.16602\r\n'
+        'Zum Mundl;Störnstein;;;;\r\n'
+        'Alt;Ort;https://alt.de/\r\n',
       );
-      expect(h, {stubenKey('Bahler', 'Neuhaus'): 'https://bahler-zoigl.de/'});
+      final bahler = s[stubenKey('Bahler', 'Neuhaus')]!;
+      expect(bahler.homepage, 'https://bahler-zoigl.de/');
+      expect(bahler.adresse, 'Marktplatz 12, 92670 Windischeschenbach');
+      expect(bahler.position?.latitude, 49.80055);
+      expect(bahler.position?.longitude, 12.16602);
+      final mundl = s[stubenKey('Zum Mundl', 'Störnstein')]!;
+      expect(mundl.homepage, isNull);
+      expect(mundl.adresse, isNull);
+      expect(mundl.position, isNull);
+      expect(s[stubenKey('Alt', 'Ort')]!.homepage, 'https://alt.de/');
     });
 
-    test('jede Zoiglstube aus der Liste hat Termine im Kalender', () {
+    test('Liste und Kalender enthalten dieselben Zoiglstuben', () {
       final ausKalender = alleEvents()
           .map((e) => stubenKey(e.zoiglstube, e.ort))
           .toSet();
-      final unbekannt = homepages.keys
-          .where((k) => !ausKalender.contains(k))
-          .toList();
-      expect(unbekannt, isEmpty);
+      expect(stuben.keys.toSet(), ausKalender);
     });
 
-    test('Homepages sind gültige http(s)-Links ohne Duplikate', () {
+    test('keine doppelten Zeilen', () {
       final zeilen = raw
           .split(RegExp(r'\r?\n'))
           .skip(1)
           .where((l) => l.trim().isNotEmpty)
           .length;
-      expect(homepages.length, zeilen);
-      for (final url in homepages.values) {
+      expect(stuben.length, zeilen);
+    });
+
+    test('Homepages sind gültige http(s)-Links', () {
+      for (final url in stuben.values.map((s) => s.homepage).nonNulls) {
         final uri = Uri.parse(url);
         expect(uri.scheme, anyOf('http', 'https'), reason: url);
         expect(uri.host, isNotEmpty, reason: url);
       }
     });
+
+    test('Adresse und Koordinaten gibt es nur zusammen', () {
+      stuben.forEach((key, s) {
+        expect(s.adresse == null, s.position == null, reason: key);
+        if (s.adresse != null) {
+          expect(s.adresse, matches(RegExp(r', 9\d{4} ')), reason: key);
+        }
+      });
+    });
+
+    test('Koordinaten liegen in der Oberpfalz nahe dem Ort', () {
+      const distance = Distance();
+      stuben.forEach((key, s) {
+        final p = s.position;
+        if (p == null) return;
+        expect(p.latitude, inInclusiveRange(49.0, 50.3), reason: key);
+        expect(p.longitude, inInclusiveRange(11.5, 12.9), reason: key);
+        final ort = kOrtCoordinates[key.split('|')[1]]!;
+        expect(
+          distance.as(LengthUnit.Kilometer, ort, p),
+          lessThan(6),
+          reason: key,
+        );
+      });
+    });
+  });
+
+  test('Routenlink je Plattform', () {
+    const ziel = LatLng(49.8, 12.16);
+    expect(
+      routeUrl(ziel, TargetPlatform.iOS),
+      'https://maps.apple.com/?daddr=49.8,12.16',
+    );
+    expect(
+      routeUrl(ziel, TargetPlatform.android),
+      'https://www.google.com/maps/dir/?api=1&destination=49.8,12.16',
+    );
   });
 
   group('Detailseite', () {
@@ -117,20 +165,54 @@ void main() {
           '${iso(von)};${iso(bis)};x;Fr - So;Bahler;Neuhaus;;$zeiten',
         );
 
-    Widget seite({String? homepage, required List<ZoiglEvent> termine}) {
+    Widget seite({
+      String? homepage,
+      String? adresse,
+      LatLng? position,
+      bool showMap = false,
+      required List<ZoiglEvent> termine,
+    }) {
       var fav = false;
       return MaterialApp(
         home: ZoiglStubeDetailPage(
           zoiglstube: 'Bahler',
           ort: 'Neuhaus',
           homepage: homepage,
+          adresse: adresse,
+          position: position,
           termine: termine,
           isFavorite: () => fav,
           onToggleFavorite: () async => fav = !fav,
-          showMap: false,
+          showMap: showMap,
         ),
       );
     }
+
+    testWidgets('mit Adresse: Adresse und Route, kein Ortshinweis', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        seite(
+          adresse: 'Marktplatz 12, 92670 Windischeschenbach (Neuhaus)',
+          position: const LatLng(49.80055, 12.16602),
+          termine: [],
+        ),
+      );
+      expect(
+        find.text('Marktplatz 12, 92670 Windischeschenbach (Neuhaus)'),
+        findsOneWidget,
+      );
+      expect(find.text('Route planen'), findsOneWidget);
+      expect(find.textContaining('nicht die genaue Adresse'), findsNothing);
+    });
+
+    testWidgets('ohne Adresse: Karte mit Ortshinweis, keine Route', (
+      tester,
+    ) async {
+      await tester.pumpWidget(seite(showMap: true, termine: []));
+      expect(find.text('Route planen'), findsNothing);
+      expect(find.textContaining('nicht die genaue Adresse'), findsOneWidget);
+    });
 
     testWidgets('zeigt Homepage, kommende und vergangene Termine', (
       tester,

@@ -52,6 +52,10 @@ class ZoiglApp extends StatelessWidget {
 
 /// Koordinaten-Tabelle für alle 26 Zoigl-Orte im Oberpfälzer Wald
 const Map<String, LatLng> kOrtCoordinates = {
+  'Amberg': LatLng(
+    49.4459,
+    11.8616,
+  ), // Winkler Zoiglstube, Obere Nabburger Str. 9
   'Burkhardsreuth': LatLng(49.8058, 11.8386),
   'Bärnau': LatLng(49.8111, 12.4356),
   'Eslarn': LatLng(49.5831, 12.5206),
@@ -66,7 +70,7 @@ const Map<String, LatLng> kOrtCoordinates = {
   'Neuhaus': LatLng(49.7997, 12.1647),
   'Neunkirchen b. Weiden': LatLng(49.6875, 12.1128),
   'Neustadt/WN': LatLng(49.7308, 12.1714),
-  'Pfaffenreuth': LatLng(50.0039, 12.1819),
+  'Pfaffenreuth': LatLng(49.7543, 12.0086), // bei Pressath
   'Plößberg': LatLng(49.7931, 12.3119),
   'Reuth b. Erbendorf': LatLng(49.8453, 12.1189),
   'Störnstein': LatLng(49.7294, 12.2039),
@@ -86,25 +90,61 @@ const kCsvAssets = [
   'assets/zoiglkalender_2027.csv',
 ];
 
-/// Stammdaten der Zoiglstuben (Homepage), Schlüssel: Zoiglstube + Ort.
+/// Stammdaten der Zoiglstuben, Schlüssel: Zoiglstube + Ort.
+/// Spalten: Zoiglstube;Ort;Homepage;Adresse;Lat;Lon (alles außer Name/Ort optional).
 const kStubenAsset = 'assets/zoiglstuben.csv';
 
-/// Liest die Homepages aus [kStubenAsset]; Schlüssel siehe [stubenKey].
-Map<String, String> parseStubenHomepages(String rawCsv) {
-  final result = <String, String>{};
+/// Stammdaten einer Zoiglstube aus [kStubenAsset].
+class StubeInfo {
+  const StubeInfo({this.homepage, this.adresse, this.position});
+
+  final String? homepage;
+  final String? adresse;
+
+  /// Genaue Lage der Stube; `null`, wenn nur der Ort bekannt ist.
+  final LatLng? position;
+}
+
+/// Liest [kStubenAsset]; Schlüssel siehe [stubenKey].
+Map<String, StubeInfo> parseStuben(String rawCsv) {
+  String? opt(List<String> parts, int i) {
+    if (parts.length <= i) return null;
+    final v = parts[i].trim();
+    return v.isEmpty ? null : v;
+  }
+
+  final result = <String, StubeInfo>{};
   final lines = rawCsv
+      .replaceFirst('﻿', '')
       .split(RegExp(r'\r?\n'))
       .where((line) => line.trim().isNotEmpty)
       .skip(1);
   for (final line in lines) {
     final parts = line.split(';');
-    if (parts.length < 3 || parts[2].trim().isEmpty) continue;
-    result[stubenKey(parts[0].trim(), parts[1].trim())] = parts[2].trim();
+    if (parts.length < 2) continue;
+    final lat = double.tryParse(opt(parts, 4) ?? '');
+    final lon = double.tryParse(opt(parts, 5) ?? '');
+    result[stubenKey(parts[0].trim(), parts[1].trim())] = StubeInfo(
+      homepage: opt(parts, 2),
+      adresse: opt(parts, 3),
+      position: lat != null && lon != null ? LatLng(lat, lon) : null,
+    );
   }
   return result;
 }
 
 String stubenKey(String zoiglstube, String ort) => '$zoiglstube|$ort';
+
+/// Link zur Routenplanung nach [ziel]: Apple Karten auf iOS/macOS,
+/// sonst Google Maps (öffnet App oder Browser).
+String routeUrl(LatLng ziel, TargetPlatform platform) {
+  final dest = '${ziel.latitude},${ziel.longitude}';
+  return switch (platform) {
+    TargetPlatform.iOS ||
+    TargetPlatform.macOS => 'https://maps.apple.com/?daddr=$dest',
+    _ => 'https://www.google.com/maps/dir/?api=1&destination=$dest',
+  };
+}
 
 /// Öffnet [url] im externen Browser; zeigt bei Fehler einen Hinweis.
 Future<void> openExternalUrl(BuildContext context, String url) async {
@@ -185,7 +225,7 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
   List<ZoiglEvent> _filteredEvents = [];
   List<String> _availableOrte = [];
   Set<String> _favoriteStuben = {};
-  Map<String, String> _homepages = {};
+  Map<String, StubeInfo> _stuben = {};
 
   String _searchQuery = '';
   String? _selectedOrt;
@@ -258,11 +298,9 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
       events.sort((a, b) => a.datumVon.compareTo(b.datumVon));
 
       // Homepages sind optional – Fehler hier dürfen die Termine nicht stoppen.
-      var homepages = <String, String>{};
+      var stuben = <String, StubeInfo>{};
       try {
-        homepages = parseStubenHomepages(
-          await rootBundle.loadString(kStubenAsset),
-        );
+        stuben = parseStuben(await rootBundle.loadString(kStubenAsset));
       } catch (e) {
         debugPrint('Fehler beim Laden der Zoiglstuben: $e');
       }
@@ -275,7 +313,7 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
 
       setState(() {
         _allEvents = events;
-        _homepages = homepages;
+        _stuben = stuben;
         _availableOrte = orteList;
         _isLoading = false;
       });
@@ -383,12 +421,15 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
     final termine = _allEvents
         .where((e) => e.zoiglstube == event.zoiglstube && e.ort == event.ort)
         .toList();
+    final info = _stuben[stubenKey(event.zoiglstube, event.ort)];
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => ZoiglStubeDetailPage(
           zoiglstube: event.zoiglstube,
           ort: event.ort,
-          homepage: _homepages[stubenKey(event.zoiglstube, event.ort)],
+          homepage: info?.homepage,
+          adresse: info?.adresse,
+          position: info?.position,
           termine: termine,
           isFavorite: () => _favoriteStuben.contains(event.zoiglstube),
           onToggleFavorite: () => _toggleFavorite(event.zoiglstube),

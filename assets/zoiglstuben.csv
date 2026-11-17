@@ -1,35 +1,48 @@
-﻿Zoiglstube;Ort;Homepage
-Bahler;Neuhaus;https://bahler-zoigl.de/
-Beim Brucksaler;Neustadt/WN;https://brucksaler.de/
-Beim Gloser;Windischeschenbach;https://beimgloser.de/
-Beim Gutbauern;Plößberg;https://zoigl-gutbauer.de/
-Beim Strehern;Eslarn;https://zoiglstum.de/
-Binner;Windischeschenbach;https://binnergeist.de/
-Brauhaus;Waldershof;https://brauhaus-waldershof.de/
-Fiedlschneider;Windischeschenbach;https://fiedlschneider-zoigl.de/
-Grandlhof-Zoigl;Krummennaab;https://www.grandlhofzoigl.de/
-Hafnerkarl;Falkenberg;https://hafnerkarl.de/
-Hammerer;Tirschenreuth;https://www.hammererzoigl.de/
-Kramer-Wolf;Falkenberg;https://www.zoigl-kramer-wolf.de/
-Käck'n;Neuhaus;https://zoiglbier.de/die-brauer/neuhaus/kaeckn/
-Lingl-Zoigl;Neuhaus;https://lingl-zoigl.de/
-Lugert;Mitterteich;https://zoigl-lugert.de/
-Mutzi's Zoiglstube;Nabburg;https://www.mutzis-zoiglstube.de/
-Schafferhof;Neuhaus;https://schafferhof-zoigl.de/
-Schlosshof-Zoigl;Windischeschenbach;https://schlosshof-zoigl.de/
-Schoilmichl;Neuhaus;https://schoilmichl.de/
-Schweinmühle;Windischeschenbach;https://www.schweinmuehle.de/
-Teicher;Neuhaus;https://teicher-zoigl.de/
-Wolfadl;Falkenberg;http://wolfadl-zoigl.de/
-Wolframstub'n;Windischeschenbach;https://zoiglbrauerei.de/
-Zoiglstube Hofner;Konnersreuth;https://zoiglstube-hofner.de/
-Zoiglstube Lugert;Mitterteich;https://zoigl-lugert.de/
-Zoiglstube Schreierbräu;Windmais;https://zoiglstube.com/
-Zum Binnerlindl;Kohlberg;http://zoigl-stubn-kohlberg.de/
-Zum Posterer;Windischeschenbach;https://zum-posterer.de/
-Zum Rechersimer;Reuth b. Erbendorf;https://rechersimer.de/
-Zum Roud'n;Windischeschenbach;https://zoiglbier.de/die-brauer/windischeschenbach/zum-roudn/
-Zum Schreiner Schorsch;Pfaffenreuth;https://www.schreiner-schorsch.de/
-Zum Sprea'n;Waldsassen;https://zoigl-waldsassen.de/
-Zum Vinzenz;Hammerles;https://zum-vinzenz.de/
-Zur Bartmühle;Bärnau;https://zoigl-bartmuehle.de/
+﻿Zoiglstube;Ort;Homepage;Adresse;Lat;Lon
+Bahler;Neuhaus;https://bahler-zoigl.de/;Marktplatz 12, 92670 Windischeschenbach (Neuhaus);49.80055;12.16602
+Beim Brucksaler;Neustadt/WN;https://brucksaler.de/;Bahnhofstraße 13, 92660 Neustadt a.d. Waldnaab;49.72765;12.16547
+Beim Deinzer;Plößberg;;;;
+Beim Gloser;Windischeschenbach;https://beimgloser.de/;Lehnerberg 2, 92670 Windischeschenbach;49.80242;12.15594
+Beim Gutbauern;Plößberg;https://zoigl-gutbauer.de/;Schönficht 5, 95703 Plößberg;49.81601;12.25328
+Beim Schnapper;Fuchsmühl;;Marienstraße 33, 95689 Fuchsmühl;49.92505;12.14364
+Beim Strehern;Eslarn;https://zoiglstum.de/;Tillystraße 4, 92693 Eslarn;49.58041;12.52335
+Binner;Windischeschenbach;https://binnergeist.de/;Kleiau 3, 92670 Windischeschenbach;49.80358;12.15615
+Brauhaus;Waldershof;https://brauhaus-waldershof.de/;Walbenreuther Straße 4, 95679 Waldershof;49.97719;12.06298
+Brauwerk;Mitterteich;;;;
+Fiedlschneider;Windischeschenbach;https://fiedlschneider-zoigl.de/;Stadtplatz 15, 92670 Windischeschenbach;49.80323;12.15542
+Gasthaus Lober - Zur Wirti;Burkhardsreuth;;Burkhardsreuth 5, 92724 Trabitz;49.79584;11.87729
+Grandlhof-Zoigl;Krummennaab;https://www.grandlhofzoigl.de/;Ackerstraße 9, 92703 Krummennaab;49.83158;12.09727
+Hafnerkarl;Falkenberg;https://hafnerkarl.de/;Kindergartenweg 7, 95685 Falkenberg;49.85921;12.21860
+Hammerer;Tirschenreuth;https://www.hammererzoigl.de/;Hospitalstraße 5, 95643 Tirschenreuth;49.87984;12.33672
+Kramer-Wolf;Falkenberg;https://www.zoigl-kramer-wolf.de/;Tirschenreuther Straße 4, 95685 Falkenberg;49.85850;12.22569
+Käck'n;Neuhaus;https://zoiglbier.de/die-brauer/neuhaus/kaeckn/;Marktplatz 18, 92670 Windischeschenbach (Neuhaus);49.80072;12.16643
+Lingl-Zoigl;Neuhaus;https://lingl-zoigl.de/;Burgstraße 1, 92670 Windischeschenbach (Neuhaus);49.80011;12.16528
+Lugert;Mitterteich;https://zoigl-lugert.de/;Bachstraße 12, 95666 Mitterteich;49.95033;12.24488
+Mutzi's Zoiglstube;Nabburg;https://www.mutzis-zoiglstube.de/;Oberviechtacher Straße 26, 92507 Nabburg;49.45449;12.18946
+Schafferhof;Neuhaus;https://schafferhof-zoigl.de/;Burgstraße 6, 92670 Windischeschenbach (Neuhaus);49.79967;12.16424
+Schlosshof-Zoigl;Windischeschenbach;https://schlosshof-zoigl.de/;Schloßhof 13, 92670 Windischeschenbach;49.80145;12.15351
+Schoilmichl;Neuhaus;https://schoilmichl.de/;Marktplatz 20, 92670 Windischeschenbach (Neuhaus);49.80079;12.16673
+Schweinmühle;Windischeschenbach;https://www.schweinmuehle.de/;Schweinmühle 1, 92670 Windischeschenbach;49.81990;12.14523
+Stefflwirt;Wiesau;;Kirchplatz 7, 95676 Wiesau;49.91043;12.17806
+Teicher;Neuhaus;https://teicher-zoigl.de/;Marktplatz 2–4, 92670 Windischeschenbach (Neuhaus);49.80026;12.16542
+Winkler Zoiglstube;Amberg;https://www.brauerei-winkler.de/;Obere Nabburger Straße 9, 92224 Amberg;49.44587;11.86157
+Wolfadl;Falkenberg;http://wolfadl-zoigl.de/;Gumpener Weg 1, 95685 Falkenberg;49.85891;12.22744
+Wolframstub'n;Windischeschenbach;https://zoiglbrauerei.de/;Braugasse 1, 92670 Windischeschenbach;49.80214;12.15513
+Zimmert Zoigl Hohenthan;Bärnau;;;;
+Zoiglstub'n Fichtenschacht;Wiesau;;Schönhaider Straße 52, 95676 Wiesau;49.90120;12.19503
+Zoiglstube Hofner;Konnersreuth;https://zoiglstube-hofner.de/;Pfarrer-Naber-Platz 12, 95692 Konnersreuth;50.01216;12.22682
+Zoiglstube Lugert;Mitterteich;https://zoigl-lugert.de/;Bachstraße 12, 95666 Mitterteich;49.95033;12.24488
+Zoiglstube Schreierbräu;Windmais;https://zoiglstube.com/;Mühlweg 5, 92439 Bodenwöhr (Windmais);49.30196;12.34394
+Zoiglwirtshaus;Neunkirchen b. Weiden;;Bürgermeister-Bärnklau-Straße 3, 92637 Weiden i.d.OPf. (Neunkirchen);49.66876;12.10061
+Zum Binnerlindl;Kohlberg;http://zoigl-stubn-kohlberg.de/;Raiffeisenstraße 1, 92702 Kohlberg;49.59138;12.01986
+Zum Glöckerlbauer;Weiden i.d.OPf.;;Schustermooslohe 31, 92637 Weiden i.d.OPf.;49.69405;12.12835
+Zum Lohbinder;Trausnitz;;Hauptstraße 18, 92555 Trausnitz;49.52020;12.26231
+Zum Mundl;Störnstein;;Neustädter Straße 2, 92721 Störnstein;49.73404;12.20691
+Zum Posterer;Windischeschenbach;https://zum-posterer.de/;An der Alten Post 5, 92670 Windischeschenbach;49.80290;12.15663
+Zum Rechersimer;Reuth b. Erbendorf;https://rechersimer.de/;Röthenbach 3, 92717 Reuth b. Erbendorf;49.85300;12.12631
+Zum Roud'n;Windischeschenbach;https://zoiglbier.de/die-brauer/windischeschenbach/zum-roudn/;Stadtplatz 3, 92670 Windischeschenbach;49.80314;12.15428
+Zum Schreiner Schorsch;Pfaffenreuth;https://www.schreiner-schorsch.de/;Pfaffenreuth 13, 92690 Pressath;49.75429;12.00858
+Zum Sprea'n;Waldsassen;https://zoigl-waldsassen.de/;Dr.-Otto-Seidl-Straße 15, 95652 Waldsassen;50.00267;12.30694
+Zum Vinzenz;Hammerles;https://zum-vinzenz.de/;Dorfhammerles 21, 92711 Parkstein (Hammerles);49.73195;12.04312
+Zum Waldhauser;Neustadt/WN;;Freyung 26, 92660 Neustadt a.d. Waldnaab;49.72938;12.16730
+Zur Bartmühle;Bärnau;https://zoigl-bartmuehle.de/;Bartmühle 1, 95671 Bärnau;49.81146;12.40200

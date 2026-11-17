@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:intl/intl.dart';
+import 'package:latlong2/latlong.dart';
 
 import 'main.dart';
 
@@ -14,6 +15,8 @@ class ZoiglStubeDetailPage extends StatefulWidget {
     required this.isFavorite,
     required this.onToggleFavorite,
     this.homepage,
+    this.adresse,
+    this.position,
     this.showMap = true,
   });
 
@@ -23,6 +26,10 @@ class ZoiglStubeDetailPage extends StatefulWidget {
   /// Alle Termine dieser Zoiglstube (vergangene und kommende).
   final List<ZoiglEvent> termine;
   final String? homepage;
+  final String? adresse;
+
+  /// Genaue Lage der Stube; ohne sie zeigt die Karte den Ortsmittelpunkt.
+  final LatLng? position;
 
   /// Liefert den aktuellen Favoriten-Status (liegt im Zustand der Startseite).
   final bool Function() isFavorite;
@@ -48,7 +55,8 @@ class _ZoiglStubeDetailPageState extends State<ZoiglStubeDetailPage> {
       ..sort((a, b) => b.datumVon.compareTo(a.datumVon));
     final heuteOffen = kommend.any((e) => e.isOpenOn(now));
     final isFav = widget.isFavorite();
-    final coords = kOrtCoordinates[widget.ort];
+    final exakt = widget.position != null;
+    final coords = widget.position ?? kOrtCoordinates[widget.ort];
 
     return Scaffold(
       appBar: AppBar(
@@ -104,8 +112,35 @@ class _ZoiglStubeDetailPageState extends State<ZoiglStubeDetailPage> {
                   ),
               ],
             ),
+            if (widget.adresse != null) ...[
+              const SizedBox(height: 8),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(Icons.home_outlined, size: 20, color: Colors.grey),
+                  const SizedBox(width: 8),
+                  Expanded(child: SelectableText(widget.adresse!)),
+                ],
+              ),
+            ],
             const SizedBox(height: 12),
-            _buildHomepage(context),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                _buildHomepage(context),
+                if (exakt)
+                  OutlinedButton.icon(
+                    onPressed: () => openExternalUrl(
+                      context,
+                      routeUrl(widget.position!, Theme.of(context).platform),
+                    ),
+                    icon: const Icon(Icons.directions),
+                    label: const Text('Route planen'),
+                  ),
+              ],
+            ),
             if (widget.showMap && coords != null) ...[
               const SizedBox(height: 16),
               ClipRRect(
@@ -115,7 +150,7 @@ class _ZoiglStubeDetailPageState extends State<ZoiglStubeDetailPage> {
                   child: FlutterMap(
                     options: MapOptions(
                       initialCenter: coords,
-                      initialZoom: 12.5,
+                      initialZoom: exakt ? 15.5 : 12.5,
                       interactionOptions: const InteractionOptions(
                         flags: InteractiveFlag.none,
                       ),
@@ -151,13 +186,14 @@ class _ZoiglStubeDetailPageState extends State<ZoiglStubeDetailPage> {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 4),
-                child: Text(
-                  'Kartenpunkt zeigt den Ort, nicht die genaue Adresse.',
-                  style: Theme.of(context).textTheme.bodySmall,
+              if (!exakt)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    'Kartenpunkt zeigt den Ort, nicht die genaue Adresse.',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
                 ),
-              ),
             ],
             const SizedBox(height: 20),
             Text(
@@ -190,6 +226,7 @@ class _ZoiglStubeDetailPageState extends State<ZoiglStubeDetailPage> {
     final url = widget.homepage;
     if (url == null) {
       return Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           const Icon(Icons.language, size: 20, color: Colors.grey),
           const SizedBox(width: 8),
@@ -203,13 +240,10 @@ class _ZoiglStubeDetailPageState extends State<ZoiglStubeDetailPage> {
     final uri = Uri.tryParse(url);
     final isProfil = uri?.host.endsWith('zoiglbier.de') ?? false;
     final host = (uri?.host ?? url).replaceFirst(RegExp(r'^www\.'), '');
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: FilledButton.icon(
-        onPressed: () => openExternalUrl(context, url),
-        icon: const Icon(Icons.open_in_new),
-        label: Text(isProfil ? 'Profil auf zoiglbier.de' : 'Homepage: $host'),
-      ),
+    return FilledButton.icon(
+      onPressed: () => openExternalUrl(context, url),
+      icon: const Icon(Icons.open_in_new),
+      label: Text(isProfil ? 'Profil auf zoiglbier.de' : 'Homepage: $host'),
     );
   }
 
