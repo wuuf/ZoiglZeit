@@ -630,6 +630,8 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
 
     return Scaffold(
       appBar: AppBar(
+        // etwas höher als Standard (56), damit der schräge Eck-Banner Platz hat
+        toolbarHeight: 64,
         title: const Row(
           children: [
             ZoiglStarIcon(size: 34, color: Colors.white),
@@ -640,6 +642,46 @@ class _ZoiglHomePageState extends State<ZoiglHomePage> {
             ),
           ],
         ),
+        // Eck-Banner unterhalb der Statusleiste, damit Uhr und Akku frei bleiben
+        flexibleSpace: SafeArea(
+          bottom: false,
+          child: ClipRect(
+            child: Stack(
+              children: [
+                // Mitte des Bandes ca. 34 pt vom rechten und 32 pt vom oberen Rand
+                Positioned(
+                  top: 23,
+                  right: -41,
+                  child: Transform.rotate(
+                    angle: math.pi / 4,
+                    child: Container(
+                      width: 150,
+                      padding: const EdgeInsets.symmetric(vertical: 3),
+                      decoration: BoxDecoration(
+                        color: Colors.amber.shade800,
+                        boxShadow: const [
+                          BoxShadow(color: Colors.black38, blurRadius: 4),
+                        ],
+                      ),
+                      child: const Text(
+                        'auch für 2027',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.3,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        // Platz rechts lassen, damit der Banner den Filter-Knopf nicht verdeckt
+        actionsPadding: const EdgeInsets.only(right: 60),
         actions: [
           if (hasActiveFilters)
             IconButton(
